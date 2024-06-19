@@ -7,13 +7,13 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
-import { Repository } from 'typeorm';
+import { LessThan, Like, Repository } from 'typeorm';
 
 @Injectable()
 export class ProductsService {
 
   constructor(
-    @InjectRepository(Product) private prodRepo: Repository<Product>  
+    @InjectRepository(Product) private prodRepo: Repository<Product>
   ) {}
   async create(createProductDto: CreateProductDto) {
     try {
@@ -36,7 +36,11 @@ export class ProductsService {
 
   async findOne(id: number) {
     try {
-      const product = await this.prodRepo.findOne({where: {id: id}});
+      const product = await this.prodRepo.findOne({
+        where: {
+          id: id
+        }
+      });
       if (!product) {
         throw new NotFoundException('Product not found!');
       }
@@ -48,8 +52,22 @@ export class ProductsService {
 
   /**
    * 
-   * @param id 
-   * @param updateProductDto 
+   * @param termino
+   * 
+   * * % termino $ indica que el termino puede estar colocado tanto a 
+   * * la derecha o izquierda en el product_name
+   */
+  async searchProduct(termino: string) {
+    const found = await this.prodRepo.find({
+      where: {product_name: Like(`%${termino}%`)}
+    });
+    return found;
+  }
+
+  /**
+   * 
+   * @param id
+   * @param updateProductDto
    * ? El preload es como el findOneAndUpdate, hace el getbyid y 
    * ? el update al mismo tiempo, pero no lo guarda en la bd.
    * 
@@ -78,5 +96,29 @@ export class ProductsService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  async setProductState(id: number) {
+    try {
+      const product = await this.prodRepo.findOne({
+        where:{id}
+      });
+      const updatedProd = await this.prodRepo.preload({
+        id,
+        is_active: !product.is_active
+      });
+      this.prodRepo.save(updatedProd);
+      return updatedProd;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async searchByDate(date: Date) {
+    return this.prodRepo.find({
+      where: {
+        created_at: LessThan(date),
+      }
+    });
   }
 }

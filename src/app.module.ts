@@ -3,9 +3,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProductsModule } from './products/products.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserModule } from './user/user.module';
 
 @Module({
-  imports: [ProductsModule,
+  imports: [
+    ProductsModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -16,7 +18,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       // NO USAR EL SYNCHRONIZE EN PRODUCCION
       synchronize: true,
       autoLoadEntities: true,
-    })
+    }),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

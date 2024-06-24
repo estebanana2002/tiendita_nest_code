@@ -13,11 +13,11 @@ export class CreateUserDto {
     @IsString()
     email: string;
 
-    @MinLength(12)
+    @MinLength(4)
     @IsString()
-    uuid: string;
+    uid: string;
 
-    @MinLength(12)
+    @MinLength(5)
     @IsString()
     password: string;
 }

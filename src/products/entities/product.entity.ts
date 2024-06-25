@@ -1,7 +1,9 @@
+import { Category } from "src/categories/entities/category.entity";
 import { 
     Column, 
     CreateDateColumn, 
     Entity, 
+    ManyToOne, 
     PrimaryGeneratedColumn
 } from "typeorm";
 
@@ -15,4 +17,6 @@ export class Product {
     @Column({default: true}) is_active: boolean;
     @CreateDateColumn({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'}) created_at: Date;
     @CreateDateColumn({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'}) updated_at: Date;
+
+    @ManyToOne(() => Category, category => category.product, {onDelete: 'SET NULL', nullable: true}) category: Category;
 }

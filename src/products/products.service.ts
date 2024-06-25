@@ -37,6 +37,9 @@ export class ProductsService {
   async findOne(id: number) {
     try {
       const product = await this.prodRepo.findOne({
+        relations: {
+          category: true
+        },
         where: {
           id: id
         }

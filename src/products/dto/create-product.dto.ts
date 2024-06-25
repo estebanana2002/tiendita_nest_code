@@ -18,4 +18,8 @@ export class CreateProductDto {
     @IsPositive()
     @Min(1)
     stock: number;
+
+    @IsNumber()
+    @IsPositive()
+    categoryId: number;
 }

@@ -3,7 +3,8 @@ import {
     Column, 
     CreateDateColumn, 
     Entity, 
-    PrimaryGeneratedColumn 
+    PrimaryGeneratedColumn, 
+    Unique
 } from "typeorm";
 import * as bcrypt from 'bcrypt';
 
@@ -12,7 +13,9 @@ export class User {
     @PrimaryGeneratedColumn() id: number;
     @Column() name: string;
     @Column() last_name: string;
-    @Column({unique: true}) email: string;
+    @Column({unique: true}) 
+    @Unique(['category_name'])
+    email: string;
     @Column({unique: true}) uid: string;
     @Column('text', {select: false}) password: string;
     @CreateDateColumn({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'}) created_at: Date;

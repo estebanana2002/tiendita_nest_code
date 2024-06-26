@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { diskStorage } from 'multer';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('products')
 export class ProductsController {
@@ -46,5 +48,19 @@ export class ProductsController {
   searchByDate(@Query('date') date: string) {
     const fechaTrans = new Date(date);
     return this.productsService.searchByDate(fechaTrans)
+  }
+
+  @Post('/withImage')
+  @UseInterceptors(FileInterceptor('img', {
+      storage: diskStorage({
+        destination: './static/uploads',
+        filename: (req, file, res) => {
+          res(null, file.originalname)
+        }
+      })
+    }
+  ))
+  uploadImage(@UploadedFile() file: Express.Multer.File) {
+    return {image: file.originalname};
   }
 }

@@ -1,10 +1,12 @@
 import { Product } from "src/products/entities/product.entity";
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 @Entity()
 export class Category {
     @PrimaryGeneratedColumn() id: number;
-    @Column({unique: true}) category: string;
+    @Column() 
+    @Unique(['category_name'])
+    category_name: string;
     @Column() description: string;
     @Column({default: true}) state: boolean;
     @CreateDateColumn({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'}) created_at: Date;

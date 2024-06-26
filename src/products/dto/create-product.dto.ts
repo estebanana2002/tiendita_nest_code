@@ -1,4 +1,5 @@
 import { IsNumber, IsPositive, IsString, Min, MinLength } from "class-validator";
+import { Category } from "src/categories/entities/category.entity";
 
 export class CreateProductDto {
     @MinLength(4)
@@ -21,5 +22,5 @@ export class CreateProductDto {
 
     @IsNumber()
     @IsPositive()
-    categoryId: number;
+    category: Category;
 }

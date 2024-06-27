@@ -124,4 +124,27 @@ export class ProductsService {
       }
     });
   }
+
+  async updateImage(id: number, url: string) {
+    try {
+      console.log({id, url})
+      const product = this.prodRepo.find({
+        where: {
+          id
+        }
+      });
+      if (!product) {
+        throw new NotFoundException();
+      }
+      const updatedProd = await this.prodRepo.preload({
+        id,
+        urlImage: url
+      });
+      this.prodRepo.save(updatedProd);
+      return updatedProd;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+
+  }
 }

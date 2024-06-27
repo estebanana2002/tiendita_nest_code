@@ -1,9 +1,10 @@
 import { diskStorage } from 'multer';
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { fileValidatior } from './helpers/validation';
 
 @Controller('products')
 export class ProductsController {
@@ -50,17 +51,22 @@ export class ProductsController {
     return this.productsService.searchByDate(fechaTrans)
   }
 
-  @Post('/withImage')
+  @Post('/withImage/:id')
   @UseInterceptors(FileInterceptor('img', {
       storage: diskStorage({
         destination: './static/uploads',
         filename: (req, file, res) => {
           res(null, file.originalname)
         }
-      })
+      }),
+      fileFilter: fileValidatior
     }
   ))
-  uploadImage(@UploadedFile() file: Express.Multer.File) {
-    return {image: file.originalname};
+  uploadImage(@UploadedFile() file: Express.Multer.File, @Param('id') id: number) {
+    if ( !file ) {
+      throw new BadRequestException(`No hay file:(((((`);
+    }
+
+    return this.productsService.updateImage(id, file.originalname);
   }
 }

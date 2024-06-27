@@ -15,6 +15,7 @@ export class Product {
     @Column({default: 0}) stock: number;
     @Column() description: string;
     @Column({default: true}) is_active: boolean;
+    @Column({nullable: true}) urlImage: string;
     @CreateDateColumn({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'}) created_at: Date;
     @CreateDateColumn({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'}) updated_at: Date;
 

@@ -1,4 +1,5 @@
-import { IsNumber, IsPositive, IsString, Min, MinLength } from "class-validator";
+import { Optional } from "@nestjs/common";
+import { IsNumber, IsPositive, IsString, Min, MinLength, isString } from "class-validator";
 import { Category } from "src/categories/entities/category.entity";
 
 export class CreateProductDto {
